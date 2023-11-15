@@ -13,7 +13,7 @@
 	<Navbar />
 	<Map />
 	<a href="https://www.codefor.de/bielefeld/" class="fixed-button" target="_blank" rel="noopener noreferrer">
-		<img src="src/data/CodeFor-bielefeld.svg" alt="Button Icon" class="button-icon">
+		<img src="CodeFor-bielefeld.svg" alt="Button Icon" class="button-icon">
 	</a>
 <div>
 
