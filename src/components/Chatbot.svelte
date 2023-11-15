@@ -58,7 +58,10 @@
     }
 
     const sendMessage = async (userShownMessage, sentMessage) => {
-        messages = [...messages, {text: userShownMessage, type: "text", sender: 'user'}];
+        messages = [...messages, {text: userShownMessage, type: "text", sender: 'user'}].map(m => {
+            m.clickable = false;
+            return m;
+        });
         await fetch('https://general-runtime.voiceflow.com/state/user/' + user_id + '/interact?logs=off', {
             ...options, body: JSON.stringify({
                 action: {type: 'text', payload: sentMessage}
@@ -88,7 +91,8 @@
                                         label: b.request.payload.intent.name,
                                         text: b.name,
                                         type: "choice",
-                                        sender: 'bot'
+                                        sender: 'bot',
+                                        clickable: true
                                     }
                                 })];
                                 console.log("all choices appended", messages);
@@ -302,11 +306,11 @@
             </svg>
         </div>
         <div class="chat-messages-wrapper" id="chat-messages-wrapper">
-            {#each messages as {text, label, type, sender, source}}
+            {#each messages as {text, label, type, sender, source, clickable}}
                 <div class="message-wrapper {sender === 'user' ? 'message-wrapper-user' : ''}">
                     {#if type === "choice"}
                         <button class="message {sender === 'user' ? 'user-message' : 'bot-message'}"
-                                on:click={(e) => {sendMessage(text, label)}}>
+                                on:click={(e) => {clickable && sendMessage(text, label)}}>
                             {#if sender === "bot" && text === "Gesundheits-Check"}
                                 🌡️
                             {:else if sender === "bot" && text === "Wasserbedarf"}
