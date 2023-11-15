@@ -157,6 +157,7 @@
                         "baumart": properties.baumart_de,
                         "kronendurchmesser": properties.kronendurc,
                         "baumhoehe": properties.baumhoehe_,
+                        "baum_oid": properties.oid,
                     }
                 })
             });

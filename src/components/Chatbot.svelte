@@ -25,6 +25,7 @@
     export let baumhoehe;
     export let baumart;
     export let kronendurchmesser;
+    export let baum_oid;
 
     let user_id;
 
@@ -37,7 +38,7 @@
 
         await fetch('https://general-runtime.voiceflow.com/state/user/' + user_id + '/variables?logs=off', {
             ...options, method: "PATCH", body: JSON.stringify({
-                baumhoehe, baumart, kronendurchmesser
+                baumhoehe, baumart, kronendurchmesser, baum_oid
             })
         })
             .then(response => response.json())
