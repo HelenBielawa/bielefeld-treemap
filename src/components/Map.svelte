@@ -1,11 +1,10 @@
 <script>
     import {onMount} from 'svelte';
-    import {GeolocateControl, Map, NavigationControl, Popup} from 'maplibre-gl';
+    import {GeolocateControl, Map, NavigationControl} from 'maplibre-gl';
     import Chatbot from "./Chatbot.svelte";
     import 'maplibre-gl/dist/maplibre-gl.css';
     import proj4 from 'proj4';
     import geojson from '../data/bielefeld_singletrees.json';
-    import Navbar from "./Navbar.svelte";
 
     let map;
     let mapContainer;
@@ -41,7 +40,7 @@
             container: 'map',
             style: {
                 'version': 8,
-                "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+                "glyphs": "fonts/{fontstack}/{range}.pbf",
                 'sources': {
                     'voyager_nolabels': {
                         'type': 'raster',
@@ -62,7 +61,7 @@
             zoom: initialState.zoom
         });
 
-        // map.addControl(new NavigationControl(), 'top-right');
+        map.addControl(new NavigationControl(), 'top-right');
 
         map.addControl(new GeolocateControl({
                 positionOptions: {
@@ -104,18 +103,6 @@
                 }
             });
 
-            map.addLayer({
-                id: 'cluster-count',
-                type: 'symbol',
-                source: 'markers',
-                filter: ['has', 'point_count'],
-                layout: {
-                    'text-field': '{point_count_abbreviated}',
-                    'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-                    'text-size': 12
-                }
-            });
-
             // Add a new layer for the individual markers
             map.addLayer({
                 id: 'marker',
@@ -130,36 +117,34 @@
                 }
             });
 
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'markers',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-font': ['lato'],
+                    'text-size': 12
+                },
+                paint: {
+                    'text-color': '#ffffff'
+                }
+            });
+
 
             // Add tooltip logic for the markers
-            var tooltip = new Popup({
-                closeButton: true,
-                closeOnClick: true
-            });
+            // var tooltip = new Popup({
+            //     closeButton: true,
+            //     closeOnClick: true
+            // });
 
 
             map.on('click', 'marker', function (e) {
                 var properties = e.features[0].properties;
-                // var coordinates = e.features[0].geometry.coordinates.slice();
-                // if (window.innerWidth < 600) {
                 let chatbotElement = document.createElement("div");
                 chatbotElement.id = "chatbot";
                 document.body.appendChild(chatbotElement);
-                // } else {
-                //     // Change the cursor style to indicate interactivity
-                //     map.getCanvas().style.cursor = 'pointer';
-                //
-                //     // Get the marker properties and coordinates
-                //
-                //     var tooltip_chat = true;
-                //
-                //     // Set the tooltip text and position
-                //     tooltip.setLngLat(coordinates)
-                //         .setHTML('<div id="chatbot"></div>')
-                //         .setMaxWidth("100vw")
-                //         //.setHTML('<h3>' + properties.baumart_de + '</h3> <p>Crown width (m): ' + properties.kronendurc + '</p><p>Height (m): ' + properties.baumhoehe_)
-                //         .addTo(map)
-                // }
 
                 new Chatbot({
                     target: document.getElementById("chatbot"),
