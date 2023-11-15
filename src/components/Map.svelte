@@ -1,7 +1,6 @@
 <script>
     import {onMount} from 'svelte';
-    import {Map, NavigationControl, Popup} from 'maplibre-gl';
-    import Tooltip from "./Tooltip.svelte";
+    import {GeolocateControl, Map, NavigationControl, Popup} from 'maplibre-gl';
     import Chatbot from "./Chatbot.svelte";
     import 'maplibre-gl/dist/maplibre-gl.css';
     import proj4 from 'proj4';
@@ -11,13 +10,17 @@
     let map;
     let mapContainer;
 
+    let lat = 52.0216803;
+    let lng = 8.5270718;
+
     const apiKey = 'ALLR7G4pDi4tPaPKedPA';
     //coordinates of the center of Bielefeld
-    const initialState = {lng: 8.5267693, lat: 52.0200753, zoom: 18};
+
+    const initialState = {lng, lat, zoom: 18};
     // 51.9359397,9.1056505,18.2z
 
+    const initializeMap = async () => {
 
-    onMount(() => {
         // Define the coordinate systems
         proj4.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs');
         proj4.defs('EPSG:4326', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
@@ -33,8 +36,6 @@
                 }
             }))
         };
-
-        console.log("GEojson:", transformedGeojson);
 
         const map = new Map({
             container: 'map',
@@ -63,6 +64,15 @@
 
         map.addControl(new NavigationControl(), 'top-right');
 
+        map.addControl(new GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true,
+                showUserHeading: true
+            })
+        );
+
         map.on('load', () => {
             map.addSource('markers', {
                 type: 'geojson',
@@ -71,7 +81,6 @@
                 clusterMaxZoom: 14, // Max zoom to cluster points on
                 clusterRadius: 50 // Radius of each cluster when clustering points
             });
-
 
             // Add a new layer for the clusters
             map.addLayer({
@@ -83,7 +92,7 @@
                     'circle-color': '#329b51',
                     'circle-stroke-color': '#2A2B2A',
                     'circle-stroke-width': 1,
-                     'circle-radius': [
+                    'circle-radius': [
                         'step',
                         ['get', 'point_count'],
                         10,
@@ -96,15 +105,15 @@
             });
 
             map.addLayer({
-            id: 'cluster-count',
-            type: 'symbol',
-            source: 'markers',
-            filter: ['has', 'point_count'],
-            layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-                'text-size': 12
-            }
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'markers',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                    'text-size': 12
+                }
             });
 
             // Add a new layer for the individual markers
@@ -128,13 +137,14 @@
                 closeOnClick: true
             });
 
+
             map.on('click', 'marker', function (e) {
                 var properties = e.features[0].properties;
                 var coordinates = e.features[0].geometry.coordinates.slice();
                 // if (window.innerWidth < 600) {
-                    let chatbotElement = document.createElement("div");
-                    chatbotElement.id = "chatbot";
-                    document.body.appendChild(chatbotElement);
+                let chatbotElement = document.createElement("div");
+                chatbotElement.id = "chatbot";
+                document.body.appendChild(chatbotElement);
                 // } else {
                 //     // Change the cursor style to indicate interactivity
                 //     map.getCanvas().style.cursor = 'pointer';
@@ -153,7 +163,7 @@
 
                 new Chatbot({
                     target: document.getElementById("chatbot"),
-                    props:{
+                    props: {
                         "baumart": properties.baumart_de,
                         "kronendurchmesser": properties.kronendurc,
                         "baumhoehe": properties.baumhoehe_,
@@ -161,12 +171,32 @@
                 })
             });
         });
+    }
+
+
+    onMount(() => {
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const setCenter = async () => {
+                    initialState.lat = position.coords.latitude;
+                    initialState.lng = position.coords.longitude;
+                    initializeMap();
+                }
+                setCenter();
+            });
+        } else {
+            alert("No geo!");
+            initializeMap();
+        }
+
+
     });
 
 
 </script>
 
-<Navbar />
+<Navbar/>
 <div class="map-wrap">
     <a href="https://www.maptiler.com" class="watermark"><img
             src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"/></a>
@@ -195,7 +225,7 @@
         #chatbot {
             position: fixed;
             top: 0;
-            left:0;
+            left: 0;
             width: calc(100vw - 20px);
             height: calc(100vh - 20px);
             padding: 10px;
