@@ -175,22 +175,7 @@
 
 
     onMount(() => {
-
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const setCenter = async () => {
-                    initialState.lat = position.coords.latitude;
-                    initialState.lng = position.coords.longitude;
-                    initializeMap();
-                }
-                setCenter();
-            });
-        } else {
-            alert("No geo!");
-            initializeMap();
-        }
-
-
+        initializeMap();
     });
 
 
