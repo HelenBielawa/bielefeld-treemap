@@ -140,8 +140,7 @@
             sendMessage(newMessage, newMessage);
         }
     }
-
-
+    
 </script>
 
 <style>

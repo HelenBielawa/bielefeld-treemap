@@ -9,20 +9,13 @@
 
 <html lang="de">
 
-
-  
 <div class="app">
 	<Navbar />
 	<Map />
-	<br/>
-	<p>This website works with the data from Bielefeld’s official 
-		<a href="https://open-data.bielefeld.de/dataset/baumbestand-umweltbetrieb">tree registry</a>. That is where all trees in public spaces are listed.
-		 It does not contain forests and groups of trees. Because of that, the focus of this analysis is on the single trees.
-	<br/>
-
-
+	<a href="https://www.codefor.de/bielefeld/" class="fixed-button" target="_blank" rel="noopener noreferrer">
+		<img src="src/data/CodeFor-bielefeld.svg" alt="Button Icon" class="button-icon">
+	</a>
 <div>
-
 
 </div>
 </html>
@@ -30,10 +23,22 @@
 <style>
 	.app {
 	  text-align: center;
-	  align: center;
 	  background-color: #F8F4E3;
-	  width:90%;
-	  height:100%;
+	  width: 100%;
+	  height: 100%;
 	  margin: auto;
+	  position: relative;
+	}
+
+	.fixed-button {
+	  position: fixed;
+	  bottom: 20px;
+	  right: 20px;
+	  z-index: 999;
+	}
+
+	.button-icon {
+	  width: 80px;
+	  height: 80px;
 	}
 </style>
