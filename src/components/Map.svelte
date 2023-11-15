@@ -61,7 +61,7 @@
             zoom: initialState.zoom
         });
 
-        map.addControl(new NavigationControl(), 'top-right');
+        // map.addControl(new NavigationControl(), 'top-right');
 
         map.on('load', () => {
             map.addSource('markers', {
@@ -130,7 +130,7 @@
 
             map.on('click', 'marker', function (e) {
                 var properties = e.features[0].properties;
-                var coordinates = e.features[0].geometry.coordinates.slice();
+                // var coordinates = e.features[0].geometry.coordinates.slice();
                 // if (window.innerWidth < 600) {
                     let chatbotElement = document.createElement("div");
                     chatbotElement.id = "chatbot";
@@ -166,14 +166,12 @@
 
 </script>
 
-<Navbar />
 <div class="map-wrap">
     <a href="https://www.maptiler.com" class="watermark"><img
             src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"/></a>
     <div class="map" id="map" bind:this={mapContainer}></div>
     <div id="tooltip" class="mapboxgl-tooltip"></div>
 </div>
-
 
 <style>
 
@@ -192,6 +190,7 @@
     }
 
     @media only screen and (max-width: 600px) {
+        /*
         #chatbot {
             position: fixed;
             top: 0;
@@ -199,7 +198,7 @@
             width: calc(100vw - 20px);
             height: calc(100vh - 20px);
             padding: 10px;
-        }
+        }*/
     }
 
     .watermark {
