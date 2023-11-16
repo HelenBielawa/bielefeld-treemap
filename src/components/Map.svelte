@@ -45,7 +45,7 @@
                     'voyager_nolabels': {
                         'type': 'raster',
                         'tiles': [
-                            "https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
+                            "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
                         ]
                     }
                 },
